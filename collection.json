@@ -112,6 +112,40 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "http://localhost:3000/write",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "note_name",
+							"value": "group",
+							"type": "text"
+						},
+						{
+							"key": "note",
+							"value": "fei-22",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/write",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"write"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
