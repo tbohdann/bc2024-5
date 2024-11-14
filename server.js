@@ -6,7 +6,7 @@ const fs = require('fs');
 
 const bodyParser = require('body-parser');
 const multer = require('multer');
-
+ 
 program
     .option('-h, --host <host>', 'Server address', 'localhost')
     .option('-p, --port <port>', 'Server port', 3000)
@@ -34,6 +34,7 @@ if (!options.cache) {
 const app = express();
 app.use(bodyParser.text());
 app.use(multer().none());
+app.use(express.json());
 
 
 app.get('/notes/:name', (req, res) => {
@@ -51,17 +52,24 @@ app.get('/notes/:name', (req, res) => {
 app.put('/notes/:name', (req, res) => {
     const noteName = req.params.name;
     const notePath = path.join(options.cache, `${noteName}.txt`);
-    const noteContent = req.body;
+    const noteContent = typeof req.body === 'object' ? req.body.text : req.body;
 
-    if (!fs.existsSync(notePath)) return res.status(404).send('Note not found');
+    if (!noteContent) {
+        return res.status(400).send('Note content is required');
+    }
+
+    if (!fs.existsSync(notePath)) {
+        return res.status(404).send('Note not found');
+    }
 
     fs.writeFile(notePath, noteContent, 'utf8', (err) => {
         if (err) {
             return res.status(500).json({ message: 'Server error', error: err });
         }
-        res.status(201).send('Note updated');
+        res.status(200).send('Note updated');
     });
 });
+
 
 app.delete('/notes/:name', (req, res) => {
     const noteName = req.params.name;
